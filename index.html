@@ -1,430 +1,348 @@
+import { useState, useRef, useEffect } from "react";
+import ahsanImg from "@/imports/ahsan.jpg.jpeg";
+import sammaImg from "@/imports/samma.jpg.jpeg";
+import adnanImg from "@/imports/adnan.jpg.jpeg";
+import yubrajImg from "@/imports/yubraj.jpg.jpeg";
+import groupImg from "@/imports/group.jpg.jpeg";
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Friends Forever ❤️</title>
+const friends = [
+  {
+    name: "Ahsan",
+    role: "The Legend",
+    phone: "01533005907",
+    img: ahsanImg,
+    alt: "Ahsan",
+    accent: "#00f5d4",
+    shadow: "0 0 40px rgba(0,245,212,0.4)",
+  },
+  {
+    name: "Samma",
+    role: "The Coder",
+    phone: "01975093159",
+    img: sammaImg,
+    alt: "Samma",
+    accent: "#f72585",
+    shadow: "0 0 40px rgba(247,37,133,0.4)",
+  },
+  {
+    name: "Adnan",
+    role: "The Spy",
+    phone: "01888300154",
+    img: adnanImg,
+    alt: "Adnan",
+    accent: "#ffd60a",
+    shadow: "0 0 40px rgba(255,214,10,0.4)",
+  },
+  {
+    name: "Yubraj",
+    role: "The Girl Lover",
+    phone: "01611005724",
+    img: yubrajImg,
+    alt: "Yubraj",
+    accent: "#7209b7",
+    shadow: "0 0 40px rgba(114,9,183,0.5)",
+  },
+];
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+const groupPhoto = groupImg;
 
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    color:#fff;
-    min-height:100vh;
-    text-align:center;
-    background:
-        radial-gradient(circle at 10% 10%,#243b70,transparent 35%),
-        radial-gradient(circle at 90% 80%,#54254e,transparent 35%),
-        #070a14;
-    padding:45px 15px;
-}
+const MUSIC_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3";
 
-header{
-    max-width:1100px;
-    margin:auto;
-}
+export default function App() {
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-.heart{
-    font-size:58px;
-    animation:beat 1.4s infinite;
-}
-
-@keyframes beat{
-    50%{transform:scale(1.15);}
-}
-
-h1{
-    font-size:clamp(28px,5vw,52px);
-    margin:18px 0 12px;
-    font-weight:800;
-}
-
-.subtitle{
-    color:#cbd5e1;
-    font-size:17px;
-    margin-bottom:45px;
-}
-
-.friends{
-    max-width:1100px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:22px;
-}
-
-.card{
-    padding:28px 15px 25px;
-    border-radius:28px;
-    background:rgba(255,255,255,.09);
-    border:1px solid rgba(255,255,255,.18);
-    box-shadow:0 20px 45px rgba(0,0,0,.35);
-    backdrop-filter:blur(12px);
-    transition:.3s;
-}
-
-.card:hover{
-    transform:translateY(-9px);
-    background:rgba(255,255,255,.14);
-}
-
-.profile{
-    width:155px;
-    height:155px;
-    object-fit:cover;
-    border-radius:50%;
-    border:5px solid #fff;
-    cursor:pointer;
-    box-shadow:0 10px 30px rgba(0,0,0,.4);
-    transition:.3s;
-}
-
-.profile:hover{
-    transform:scale(1.06);
-}
-
-.name{
-    margin-top:20px;
-    font-size:25px;
-    font-weight:800;
-    letter-spacing:1px;
-}
-
-.best{
-    margin-top:7px;
-    color:#b9c4d8;
-    font-size:13px;
-}
-
-.whatsapp{
-    display:inline-block;
-    margin-top:20px;
-    padding:11px 22px;
-    border-radius:30px;
-    background:#25d366;
-    color:#fff;
-    text-decoration:none;
-    font-weight:bold;
-    transition:.3s;
-}
-
-.whatsapp:hover{
-    transform:scale(1.06);
-    box-shadow:0 8px 25px rgba(37,211,102,.35);
-}
-
-.group{
-    max-width:1100px;
-    margin:75px auto 0;
-}
-
-.group h2{
-    font-size:32px;
-    margin-bottom:10px;
-}
-
-.group p{
-    color:#b9c4d8;
-    margin-bottom:25px;
-}
-
-.group-box{
-    padding:12px;
-    border-radius:30px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.15);
-    box-shadow:0 20px 55px rgba(0,0,0,.4);
-}
-
-.group-photo{
-    display:block;
-    width:100%;
-    max-height:650px;
-    object-fit:contain;
-    border-radius:20px;
-    cursor:pointer;
-}
-
-.quote{
-    max-width:800px;
-    margin:60px auto 0;
-    padding:20px;
-}
-
-.quote h3{
-    font-size:21px;
-    line-height:1.6;
-}
-
-.quote p{
-    color:#94a3b8;
-    margin-top:12px;
-}
-
-footer{
-    margin-top:45px;
-    padding:25px;
-    color:#7f8ba3;
-    line-height:1.8;
-    font-size:14px;
-}
-
-.popup{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:9999;
-    background:rgba(0,0,0,.95);
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-}
-
-.popup img{
-    max-width:95%;
-    max-height:90vh;
-    object-fit:contain;
-    border-radius:15px;
-}
-
-.close{
-    position:absolute;
-    top:10px;
-    right:25px;
-    font-size:50px;
-    color:white;
-    cursor:pointer;
-}
-
-@media(max-width:950px){
-    .friends{
-        grid-template-columns:repeat(2,1fr);
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) {
+      audio.play().catch(() => setPlaying(false));
+    } else {
+      audio.pause();
     }
-}
+  }, [playing]);
 
-@media(max-width:550px){
-    body{
-        padding:35px 12px;
-    }
+  return (
+    <div className="min-h-screen" style={{ background: "#080a10", fontFamily: "'Outfit', sans-serif" }}>
 
-    h1{
-        font-size:29px;
-        line-height:1.3;
-    }
+      {/* hidden audio */}
+      <audio ref={audioRef} src={MUSIC_URL} loop />
 
-    .subtitle{
-        font-size:14px;
-    }
-
-    .friends{
-        grid-template-columns:1fr;
-        max-width:370px;
-    }
-
-    .profile{
-        width:155px;
-        height:155px;
-    }
-
-    .group h2{
-        font-size:27px;
-    }
-
-    .quote h3{
-        font-size:19px;
-    }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-    <div class="heart">❤️</div>
-
-    <h1>SAMMA, ADNAN, YUBRAJ & AHSAN</h1>
-
-    <p class="subtitle">
-        FOUR FRIENDS • ONE BOND • FOREVER 🤝
-    </p>
-</header>
-
-
-<section class="friends">
-
-    <div class="card">
-        <img
-            src="samma.jpg.jpeg"
-            alt="SAMMA"
-            class="profile"
-            onclick="openImage(this.src)"
+      {/* NAV */}
+      <nav className="flex items-center justify-between px-8 py-5 border-b border-white/5">
+        <span
+          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", letterSpacing: "0.12em", color: "#00f5d4" }}
         >
+          THE SQUAD
+        </span>
+        <div className="flex items-center gap-6">
+          <div className="flex gap-6 text-sm text-white/40 font-medium tracking-widest uppercase">
+            <a href="#members" className="hover:text-white transition-colors">Members</a>
+            <a href="#group" className="hover:text-white transition-colors">Group</a>
+          </div>
 
-        <div class="name">SAMMA</div>
-        <div class="best">BEST FRIEND ❤️</div>
+          {/* music toggle */}
+          <button
+            onClick={() => setPlaying((p) => !p)}
+            title={playing ? "Pause music" : "Play relaxing music"}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300"
+            style={{
+              background: playing ? "rgba(0,245,212,0.15)" : "rgba(255,255,255,0.05)",
+              border: `1px solid ${playing ? "#00f5d4" : "rgba(255,255,255,0.1)"}`,
+              color: playing ? "#00f5d4" : "rgba(255,255,255,0.4)",
+              boxShadow: playing ? "0 0 16px rgba(0,245,212,0.25)" : "none",
+            }}
+          >
+            {playing ? (
+              <>
+                <span style={{ display: "flex", gap: "2px", alignItems: "flex-end", height: "12px" }}>
+                  {[3, 5, 4, 6, 3].map((h, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: "2px", background: "#00f5d4", borderRadius: "1px",
+                        height: `${h * 2}px`,
+                        animation: `bar${i} 0.6s ease-in-out infinite alternate`,
+                        animationDelay: `${i * 0.1}s`,
+                      }}
+                    />
+                  ))}
+                </span>
+                Vibing
+              </>
+            ) : (
+              <>♪ Play Vibes</>
+            )}
+          </button>
+        </div>
+      </nav>
+
+      <style>{`
+        @keyframes bar0 { from { height: 4px } to { height: 12px } }
+        @keyframes bar1 { from { height: 8px } to { height: 4px } }
+        @keyframes bar2 { from { height: 6px } to { height: 14px } }
+        @keyframes bar3 { from { height: 10px } to { height: 6px } }
+        @keyframes bar4 { from { height: 4px } to { height: 10px } }
+      `}</style>
+
+      {/* HERO */}
+      <section className="relative flex flex-col items-center justify-center text-center px-6 py-24 overflow-hidden">
+        <div
+          style={{
+            position: "absolute", top: "-80px", left: "50%", transform: "translateX(-50%)",
+            width: "700px", height: "400px", borderRadius: "50%",
+            background: "radial-gradient(ellipse, rgba(114,9,183,0.25) 0%, transparent 70%)",
+            filter: "blur(40px)", pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute", bottom: "-60px", right: "-100px",
+            width: "500px", height: "300px", borderRadius: "50%",
+            background: "radial-gradient(ellipse, rgba(247,37,133,0.18) 0%, transparent 70%)",
+            filter: "blur(50px)", pointerEvents: "none",
+          }}
+        />
+
+        <p className="text-sm tracking-[0.4em] uppercase mb-4" style={{ color: "#00f5d4" }}>
+          Est. Forever
+        </p>
+        <h1
+          style={{
+            fontFamily: "'Bebas Neue', sans-serif",
+            fontSize: "clamp(3.5rem, 10vw, 8rem)",
+            lineHeight: 0.95,
+            letterSpacing: "0.05em",
+            background: "linear-gradient(135deg, #ffffff 0%, #a0a8c0 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Four Friends.<br />
+          <span style={{
+            background: "linear-gradient(90deg, #00f5d4, #7209b7, #f72585)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}>
+            One Squad.
+          </span>
+        </h1>
+        <p className="mt-6 max-w-lg text-white/50 text-base leading-relaxed">
+          Ahsan, Samma, Adnan & Yubraj — bound by loyalty, chaos, and way too many late nights.
+        </p>
 
         <a
-            class="whatsapp"
-            href="https://wa.me/8801975093159"
-            target="_blank"
+          href="#members"
+          className="mt-10 px-8 py-3 rounded-full text-sm font-semibold tracking-widest uppercase transition-all duration-300"
+          style={{
+            background: "linear-gradient(90deg, #00f5d4, #7209b7)",
+            color: "#080a10",
+            boxShadow: "0 0 30px rgba(0,245,212,0.3)",
+          }}
         >
-            💬 WHATSAPP
+          Meet the Crew
         </a>
+      </section>
+
+      {/* MEMBERS */}
+      <section id="members" className="px-6 pb-24 max-w-6xl mx-auto">
+        <h2
+          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.5rem", letterSpacing: "0.1em", color: "#ffffff" }}
+          className="text-center mb-2"
+        >
+          THE MEMBERS
+        </h2>
+        <p className="text-center text-white/30 text-sm tracking-widest uppercase mb-14">
+          The four pillars
+        </p>
+
+        <div className="grid grid-cols-2 gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+          {friends.map((f, i) => (
+            <div
+              key={f.name}
+              className="relative group cursor-pointer"
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+              style={{ transition: "transform 0.3s ease", transform: hovered === i ? "translateY(-8px)" : "translateY(0)" }}
+            >
+              <div
+                className="relative overflow-hidden rounded-2xl"
+                style={{
+                  background: "#0f1218",
+                  border: `1px solid ${hovered === i ? f.accent : "rgba(255,255,255,0.06)"}`,
+                  boxShadow: hovered === i ? f.shadow : "none",
+                  transition: "border 0.3s ease, box-shadow 0.3s ease",
+                }}
+              >
+                <span
+                  className="absolute top-3 left-3 z-10 text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: f.accent + "22", color: f.accent, border: `1px solid ${f.accent}44` }}
+                >
+                  0{i + 1}
+                </span>
+
+                <div className="relative h-72 overflow-hidden" style={{ background: "#1a1e28" }}>
+                  <img
+                    src={f.img}
+                    alt={f.alt}
+                    className="w-full h-full object-cover object-top transition-transform duration-500"
+                    style={{ transform: hovered === i ? "scale(1.06)" : "scale(1)" }}
+                  />
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: `linear-gradient(to top, ${f.accent}33 0%, transparent 60%)`,
+                      opacity: hovered === i ? 1 : 0,
+                      transition: "opacity 0.3s ease",
+                    }}
+                  />
+                </div>
+
+                <div className="px-5 py-4">
+                  <h3
+                    style={{
+                      fontFamily: "'Bebas Neue', sans-serif",
+                      fontSize: "1.8rem",
+                      letterSpacing: "0.06em",
+                      color: hovered === i ? f.accent : "#ffffff",
+                      transition: "color 0.3s ease",
+                    }}
+                  >
+                    {f.name}
+                  </h3>
+                  <p className="text-xs tracking-widest uppercase mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                    {f.role}
+                  </p>
+
+                  <a
+                    href={`https://wa.me/880${f.phone.replace(/^0/, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 flex items-center gap-2 text-xs font-medium transition-all duration-200 group/wp"
+                    style={{ color: "rgba(255,255,255,0.35)" }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="#25D366"/>
+                    </svg>
+                    <span className="group-hover/wp:text-white transition-colors">{f.phone}</span>
+                  </a>
+
+                  <div
+                    className="mt-3 h-0.5 rounded-full transition-all duration-500"
+                    style={{
+                      background: f.accent,
+                      width: hovered === i ? "100%" : "24px",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* GROUP PHOTO */}
+      <section id="group" className="px-6 pb-28 max-w-6xl mx-auto">
+        <h2
+          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "2.5rem", letterSpacing: "0.1em", color: "#ffffff" }}
+          className="text-center mb-2"
+        >
+          THE CREW
+        </h2>
+        <p className="text-center text-white/30 text-sm tracking-widest uppercase mb-10">
+          Together always
+        </p>
+
+        <div
+          className="relative overflow-hidden rounded-3xl"
+          style={{
+            border: "1px solid rgba(255,255,255,0.07)",
+            boxShadow: "0 0 80px rgba(114,9,183,0.3), 0 0 40px rgba(0,245,212,0.1)",
+          }}
+        >
+          <img
+            src={groupPhoto}
+            alt="The squad — Ahsan, Samma, Adnan and Yubraj together"
+            className="w-full object-cover"
+            style={{ height: "clamp(280px, 45vw, 560px)", background: "#1a1e28" }}
+          />
+
+          <div
+            className="absolute inset-0 flex flex-col justify-end p-8"
+            style={{
+              background: "linear-gradient(to top, rgba(8,10,16,0.92) 0%, rgba(8,10,16,0.3) 50%, transparent 100%)",
+            }}
+          >
+            <p className="text-xs tracking-[0.4em] uppercase mb-2" style={{ color: "#00f5d4" }}>
+              The Legendary Four
+            </p>
+            <div className="flex flex-wrap gap-x-6 gap-y-1">
+              {friends.map((f) => (
+                <span
+                  key={f.name}
+                  style={{
+                    fontFamily: "'Bebas Neue', sans-serif",
+                    fontSize: "clamp(1.4rem, 3vw, 2.2rem)",
+                    letterSpacing: "0.06em",
+                    color: f.accent,
+                  }}
+                >
+                  {f.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="border-t border-white/5 py-8 text-center">
+        <p className="text-white/20 text-xs tracking-widest uppercase">
+          Made with love · Ahsan · Samma · Adnan · Yubraj
+        </p>
+      </footer>
     </div>
-
-
-    <div class="card">
-        <img
-            src="adnan.jpg.jpeg"
-            alt="ADNAN"
-            class="profile"
-            onclick="openImage(this.src)"
-        >
-
-        <div class="name">ADNAN</div>
-        <div class="best">BEST FRIEND ❤️</div>
-
-        <a
-            class="whatsapp"
-            href="https://wa.me/8801888300154"
-            target="_blank"
-        >
-            💬 WHATSAPP
-        </a>
-    </div>
-
-
-    <div class="card">
-        <img
-            src="yubraj.jpg.jpeg"
-            alt="YUBRAJ"
-            class="profile"
-            onclick="openImage(this.src)"
-        >
-
-        <div class="name">YUBRAJ</div>
-        <div class="best">BEST FRIEND ❤️</div>
-
-        <a
-            class="whatsapp"
-            href="https://wa.me/8801611005724"
-            target="_blank"
-        >
-            💬 WHATSAPP
-        </a>
-    </div>
-
-
-    <div class="card">
-        <img
-            src="ahsan.jpg.jpeg"
-            alt="AHSAN"
-            class="profile"
-            onclick="openImage(this.src)"
-        >
-
-        <div class="name">AHSAN</div>
-        <div class="best">BEST FRIEND ❤️</div>
-
-        <a
-            class="whatsapp"
-            href="https://wa.me/8801533005907"
-            target="_blank"
-        >
-            💬 WHATSAPP
-        </a>
-    </div>
-
-</section>
-
-
-<section class="group">
-
-    <h2>📸 OUR GROUP PHOTO</h2>
-
-    <p>
-        ONE PHOTO • A THOUSAND MEMORIES ❤️
-    </p>
-
-    <div class="group-box">
-
-        <img
-            src="group.jpg.jpeg"
-            alt="OUR GROUP PHOTO"
-            class="group-photo"
-            onclick="openImage(this.src)"
-        >
-
-    </div>
-
-</section>
-
-
-<section class="quote">
-
-    <h3>
-        “Good friends are like stars.
-        You don't always see them,
-        but you know they're always there.” ❤️
-    </h3>
-
-    <p>
-        SAMMA • ADNAN • YUBRAJ • AHSAN
-    </p>
-
-</section>
-
-
-<footer>
-
-    MADE WITH ❤️ BY FOUR BEST FRIENDS
-
-    <br>
-
-    SAMMA • ADNAN • YUBRAJ • AHSAN
-
-</footer>
-
-
-<div
-    class="popup"
-    id="popup"
-    onclick="closeImage()"
->
-
-    <span class="close">&times;</span>
-
-    <img
-        id="popupImage"
-        src=""
-        alt="Full Image"
-    >
-
-</div>
-
-
-<script>
-
-function openImage(src){
-
-    document.getElementById("popupImage").src = src;
-
-    document.getElementById("popup").style.display = "flex";
+  );
 }
-
-function closeImage(){
-
-    document.getElementById("popup").style.display = "none";
-}
-
-</script>
-
-</body>
-</html>
-```
